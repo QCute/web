@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>index</title>
+    <style> html, body, canvas {margin: 0; padding: 0; width: 100vw; height: 100vh; overflow: hidden; user-select: none;} </style>
+    <style> #panel, #widget {position: fixed; width: 300px; z-index: 100; display: block; text-align: center; background-color: white; box-shadow: rgba(64, 64, 64, 1) 0px 0px 8px 0px;} </style>
+    <style> #panel { top: 10%; left: 5%; } </style>
+    <style> #widget { top: 50%; left: 5%; } </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet">
+    <!-- lib -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    
+    <!-- find ../server/script/make/protocol/js/ -maxdepth 1 -name "*.js" ! -name "Encoder.js" ! -name "Decoder.js" ! -name "ProtocolRouter.js" | sed 's/^/\<script src\=\"/g' | sed 's/$/\"\>\<\/script\>/g' -->
+    <script src="../server/script/make/protocol/js/AccountProtocol.js"></script>
+
+    <!-- find ../server/script/make/protocol/js/meta/ -maxdepth 1 -name "*.js"  ! -name "Reader.js" ! -name "Writer.js" ! -name "ProtocolDefine.js" | sed 's/^/\<script src\=\"/g' | sed 's/$/\"\>\<\/script\>/g' -->
+    <script src="../server/script/make/protocol/js/meta/AccountProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/AchievementProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/AuctionProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/BubbleProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/BuffProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/ChatProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/CheatProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/DailyProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/DungeonProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/FashionProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/FriendProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/GuildProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/ItemProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/MailProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/MapProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/NoticeProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/RankCenterProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/RankProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/RankWorldProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/RoleProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/ShopProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/SkillProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/TaskProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/TitleProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/WarProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/WelfareProtocol.js"></script>
+    
+    <!-- protocol encoder/decoder -->
+    <!-- find ../server/script/make/protocol/js/ -name "*.js" | sed 's/^/\<script src\=\"/g' | sed 's/$/\"\>\<\/script\>/g' -->
+    <script src="../server/script/make/protocol/js/ProtocolRouter.js"></script>
+    <script src="../server/script/make/protocol/js/Encoder.js"></script>
+    <script src="../server/script/make/protocol/js/Decoder.js"></script>
+
+    <!-- protocol reader/writer -->
+    <!-- find ../server/script/make/protocol/js/meta/ -name "*.js" | sed 's/^/\<script src\=\"/g' | sed 's/$/\"\>\<\/script\>/g' -->
+    <script src="../server/script/make/protocol/js/meta/ProtocolDefine.js"></script>
+    <script src="../server/script/make/protocol/js/meta/Reader.js"></script>
+    <script src="../server/script/make/protocol/js/meta/Writer.js"></script>
+
+    <!-- core -->
+    <script src="./js/Grid.js"></script>
+    <script src="./js/Net.js"></script>
+</head>
+<body onkeydown="event.key == 'Escape' && (document.getElementById('panel').style.display = 'unset')">
+    <div id="panel">
+        <br /><br />
+        <input type="button" value="关闭面板" onclick="document.getElementById('panel').style.display = 'none'" style="width: 60%;" /><br /><br /><br />
+        <br /><br />
+        <input type="text" id="address" placeholder="地址" value="http://192.168.30.155/api/server-list" style="outline: none;" /><br /><br />
+        <input type="button" value="请求" onclick="request()" style="width: 60%;" /><br /><br />
+        <select id="server" name="server" placeholder="服务器" style="width: 60%;"></select><br /><br />
+        <input type="text" id="account" name="account" placeholder="账号" /><br /><br />
+        <input type="button" value="登录" onclick="login()" style="width: 60%;" /><br /><br /><br />
+        <br /><br />
+        <input type="number" id="protocol" placeholder="协议号" style="outline: none;" /><br /><br />
+        <input type="text" id="content" placeholder="内容" style="outline: none;" /><br /><br />
+        <input type="button" value="发送" onclick="send()" style="width: 60%;" /><br /><br /><br />
+        <textarea id="result" cols="22" rows="10"></textarea>
+        <br /><br /><br />
+    </div>
+    <canvas id="map" onmousedown="net.move(event.offsetX, event.offsetY)"> Your browser does not support the canvas element. </canvas>
+    <script type="text/javascript">
+        // data
+        let net = {};
+        let servers = [];
+        // request
+        function request() {
+            let address = document.getElementById("address").value;
+            axios({ 'url': address}).then(response => {
+                // setup server list
+                servers = response.data;
+                const text = response.data.map(s => `<option value="${s.server_name}">${s.server_name}</option>`);
+                document.getElementById("server").innerHTML = text;
+            });
+        }
+        request();
+        // login
+        function login() {
+            let account = document.getElementById("account").value;
+            net = new Net(account, servers, "map", 20);
+            let server = document.getElementById("server").value;
+            net.connect(server);
+        }
+        // send
+        function send() {
+            let protocol = document.getElementById("protocol").value;
+            let content = JSON.parse(document.getElementById("content").value);
+            net.addHandler(protocol, (protocol, content) => { 
+                document.getElementById("result").value += JSON.stringify(content) + '\n';
+                net.removeHandler(protocol); 
+            });
+            net.send(protocol, content);
+        }
+        // widget draggable
+        $(function () { $("#panel").draggable(); });
+        $(function () { $("#widget").draggable(); });
+        let list = [];
+
+        function loop(callback, time, timeout) {
+            setTimeout(() => {
+                callback();
+                if (time > 0) loop(callback, time - 1, timeout);
+            }, timeout)
+        }
+    </script>
+</body>
+</html>

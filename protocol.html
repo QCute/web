@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>快上车</title>
+    <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAANSURBVBhXY2BgYGAAAAAFAAGKM+MAAAAAAElFTkSuQmCC" type="image/x-icon" />
+    <link rel="shortcut icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAANSURBVBhXY2BgYGAAAAAFAAGKM+MAAAAAAElFTkSuQmCC" type="image/x-icon" />
+    <script src="https://unpkg.com/axios@0.27.2/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/vue@3.2.33/dist/vue.global.prod.js"></script>
+    <!-- AntDesign -->
+    <script src="https://unpkg.com/dayjs@1.11.2/dayjs.min.js"></script>
+    <link href="https://unpkg.com/ant-design-vue@3.2.3/dist/antd.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/ant-design-vue@3.2.3/dist/antd.min.js"></script>
+    <!-- highlight js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/styles/vs.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script src="https://unpkg.com/vue3-highlightjs@1.0.5/dist/vue3-highlight.min.js"></script>
+    <!-- FontAwesome -->
+    <link href="https://unpkg.com/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" rel="stylesheet">
+
+    <!-- @protocol-start -->
+    
+    <!-- find ../server/script/make/protocol/js/ -maxdepth 1 -name "*.js" ! -name "Encoder.js" ! -name "Decoder.js" ! -name "ProtocolRouter.js" | sed 's/^/\<script src\=\"/g' | sed 's/$/\"\>\<\/script\>/g' -->
+    <script src="../server/script/make/protocol/js/AccountProtocol.js"></script>
+
+    <!-- find ../server/script/make/protocol/js/meta/ -maxdepth 1 -name "*.js"  ! -name "Reader.js" ! -name "Writer.js" ! -name "ProtocolDefine.js" | sed 's/^/\<script src\=\"/g' | sed 's/$/\"\>\<\/script\>/g' -->
+    <script src="../server/script/make/protocol/js/meta/AccountProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/AchievementProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/AuctionProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/BubbleProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/BuffProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/ChatProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/CheatProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/DailyProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/DungeonProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/FashionProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/FriendProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/GuildProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/ItemProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/MailProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/MapProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/NoticeProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/RankCenterProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/RankProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/RankWorldProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/RoleProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/ShopProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/SkillProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/TaskProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/TitleProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/WarProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/meta/WelfareProtocol.js"></script>
+    <!-- @protocol-end -->
+
+    <!-- protocol encoder/decoder -->
+    <script src="../server/script/make/protocol/js/ProtocolRouter.js"></script>
+    <script src="../server/script/make/protocol/js/Encoder.js"></script>
+    <script src="../server/script/make/protocol/js/Decoder.js"></script>
+
+    <!-- protocol reader/writer -->
+    <script src="../server/script/make/protocol/js/meta/ProtocolDefine.js"></script>
+    <script src="../server/script/make/protocol/js/meta/Reader.js"></script>
+    <script src="../server/script/make/protocol/js/meta/Writer.js"></script>
+
+    <!-- core -->
+    <script src="./js/Grid.js"></script>
+    <script src="./js/Net.js"></script>
+</head>
+<body>
+    <div id="container"></div>
+    <script>
+        let net;
+        // view
+        let app = Vue.createApp({
+            setup() {
+                const list = Array
+                    .from(document.querySelectorAll('script'))
+                    .filter(s => s.src.indexOf('Protocol') != -1)
+                    .map(s => s.src.substring(s.src.lastIndexOf('/') + 1, s.src.lastIndexOf('Protocol')).toLowerCase())
+                    .map(s => {
+                        try { return {"name": s, "protocol": eval(`${s}Protocol`)}; } catch (e) { return undefined; }
+                    })
+                    .filter(s => typeof s != 'undefined');
+                console.log('protocol list:', list);
+                // generate form
+                const generate = function(list) {
+                    let data = [];
+                    for (let item of list) {
+                        if(item.type == "list") {
+                            let sub = generate(item.explain);
+                            data.push(Object.assign(Object.assign({}, item), Object.assign({'def': [...sub], 'explain': [...sub], 'value': "[]"})));
+                        } else if(item.type.indexOf("st") !== -1) {
+                            data.push(Object.assign({'def': [], 'value': ""}, item));
+                        } else {
+                            data.push(Object.assign({'def': [], 'value': 0, }, item));
+                        }
+                    }
+                    return data;
+                };
+                let forms = {};
+                const numberList = list.map(p => Object.keys(p.protocol)).flat().filter(s => s != "name");
+                for (let protocol of numberList) {
+                    const list = (getProtocolDefine(protocol, "write") || []);
+                    const field = {'name': "protocol", 'type': "u16", 'comment': "协议号", 'explain': [], 'value': protocol};
+                    forms[protocol] = Vue.reactive({ 'explain' : [field, ...generate(list)] });
+                }
+                console.log('forms:', forms);
+                return {
+                    'activeKey': Vue.ref(0),
+                    'address': Vue.ref('http://192.168.30.155/api/server-list'),
+                    'servers': Vue.ref([]),
+                    'list': Vue.ref(list),
+                    'account': Vue.ref({'server': undefined, 'account': undefined}),
+                    'forms': Vue.ref(forms),
+                    'result' : Vue.ref({}),
+                }
+            },
+            'methods': {
+                fetch() {
+                    axios({ 'url': this.address}).then(response => {
+                        // setup server list
+                        this.servers = response.data;
+                        // use the first if exists
+                        if(response.data.length > 0) {
+                            this.account.server = this.account.server = this.servers[0].server_name;
+                        }
+                    });
+                },
+                login(values) {
+                    net = new Net(values['account'], this.servers);
+                    net.addHandler(10001, this.onProtocol);
+                    net.connect(this.account.server);
+                },
+                send(id) {
+                    console.log('protocol:', id);
+                    const collect = (list, length) => {
+                        return list.reduce((total, field, index) => { 
+                            if (field.type == 'list') {
+                                total[Math.trunc(index / length)].push(collect(field['explain'], field['def'].length));
+                            } else if (field['type'].indexOf('st') !== -1) {
+                                total[Math.trunc(index / length)].push(field['value']);
+                            } else {
+                                total[Math.trunc(index / length)].push(parseInt(field['value']));
+                            }
+                            return total;
+                        }, Array.from(new Array(list.length / length), _ => []));
+                    };
+                    const data = collect(this.forms[id].explain, this.forms[id].explain.length).pop();
+                    const protocol = data.shift();
+                    console.log('protocol data:', data);
+                    if(net) {
+                        net.addHandler(protocol, this.onProtocol);
+                        if(!net.send(protocol, data)) alert('发送失败');
+                    } else {
+                        alert('没有登录')
+                    }
+                },
+                onProtocol(protocol, content) {
+                    if(protocol == 10001 && content.result.length == 0) {
+                        alert('登录成功');
+                    };
+                    this.result[protocol] = this.prettyFormat(content);
+                },
+                prettyFormat(code) {
+                    // json格式美化
+                    try {
+                        for (const key in code) {
+                            if (typeof code[key] === 'function') {
+                                let str = code[key];
+                                str = str.toString();
+                                code[key] = str.replace(/\n/g, '<br/>');
+                            }
+                        }
+                        // 设置缩进为4个空格
+                        let str = JSON.stringify(code, null, 4);
+                        return str.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>'); // str = str.replace(/\n/g, '/r')
+                    } catch (e) {
+                        console.error(e);
+                        return '';
+                    }
+                },
+            },
+            "template": `
+<a-tabs>
+    <a-tab-pane key="0" tab="登录面板">
+        <a-form :model="account" :label-col="{ span: 2 }" :wrapper-col="{ span: 16 }" @finish="login">
+            <a-form-item name="address" label="请求地址">
+                <a-input-search v-model:value="address" placeholder="" enter-button="获取" @search="fetch" />
+            </a-form-item>
+            <a-form-item name="server" label="服务器" :rules="[{ required: true, message: '请选择服务器' }]">
+                <a-select v-model:value="account.server" placeholder="">
+                    <a-select-option v-for="server in servers" :value="server.server_name">{{ server.server_name }}</a-select-option>
+                </a-select>
+            </a-form-item>
+            <a-form-item name="account" label="账号" :rules="[{ required: true, message: '请输入账号' }]">
+                <a-input v-model:value="account.account" placeholder="" />
+            </a-form-item>
+            <a-form-item :wrapper-col="{ offset: 2, span: 16 }">
+                <a-button type="primary" html-type="submit">登录</a-button>
+            </a-form-item>
+        </a-form>
+    </a-tab-pane>
+    <a-tab-pane v-for="(data, tab) in list" :key="tab + 1" :tab="data.name + '(' + Math.trunc(Object.keys(data.protocol)[0] / 100) + ')'">
+        <a-list item-layout="horizontal" :data-source="Object.keys(data.protocol)">
+            <template #renderItem="{ item }">
+                <a-list-item>
+                    <a-card :title="data.protocol[item].comment" style="width: 100%">
+                        <template #extra><a href="#">{{ item }}</a></template>                        
+                        <a-form :model="forms[item]" :label-col="{ span: 2 }" :wrapper-col="{ span: 16 }" @finish="send(item)">
+                            
+                            <span v-for="(field, index) in forms[item].explain">
+                                <a-form-item v-if="field.type !== 'list'" :name="['explain', index, 'value']" :label="field.comment" :rules="[{ required: true, message: field.comment + '没有赋值' }]">
+                                    <a-input v-model:value="field.value" :placeholder="'类型: ' + field.type" :disabled="index == 0"/>
+                                </a-form-item>
+                                <a-form-item v-if="field.type === 'list'" :name="['explain', index, 'value']" :label="field.comment" :rules="[{ required: true, message: field.comment + '没有赋值' }]">
+                                    <a-input v-model="field.value" :value="field.comment" disabled>
+                                        <template #addonBefore><i class="fa-solid fa-plus" style="cursor: pointer;" @click="field.def.forEach(e => field.explain.push(Object.assign({}, e)))"></i></template>
+                                        <template #addonAfter><i class="fa-solid fa-minus" style="cursor: pointer;" @click="field.def.forEach(e => field.explain.pop())"></i></template>
+                                    </a-input>
+                                </a-form-item>
+                                <span v-for="(field1, index1) in field.explain">
+                                    <a-row>
+                                        <a-col :span="2"/>
+                                        <a-col :span="16"><a-divider v-if="index1 !== 0 && index1 % field.def.length == 0" style="height: 2px; background-color: #1890ff;"/></a-col>
+                                        <a-col :span="8"/>
+                                    </a-row>
+                                    
+                                    <a-form-item v-if="field1.type !== 'list'" :name="['explain', index, 'explain', index1, 'value']" :label="field1.comment" :label-col="{ span: 4 }" :wrapper-col="{ span: 14 }" :rules="[{ required: true, message: field1.comment + '没有赋值' }]">
+                                        <a-input v-model:value="field1.value" :placeholder="'类型: ' + field1.type"/>
+                                    </a-form-item>
+                                    <a-form-item v-if="field1.type === 'list'" :name="['explain', index, 'explain', index1, 'value']" :label="field1.comment" :label-col="{ span: 4 }" :wrapper-col="{ span: 14 }" :rules="[{ required: true, message: field1.comment + '没有赋值' }]">
+                                        <a-input v-model="field1.value" :value="field1.comment" disabled>
+                                            <template #addonBefore><i class="fa-solid fa-plus" style="cursor: pointer;" @click="field1.def.forEach(e => field1.explain.push(Object.assign({}, e)))"></i></template>
+                                            <template #addonAfter><i class="fa-solid fa-minus" style="cursor: pointer;" @click="field1.def.forEach(e => field1.explain.pop())"></i></template>
+                                        </a-input>
+                                    </a-form-item>
+                                    <span v-for="(field2, index2) in field1.explain">
+                                        <a-row>
+                                            <a-col :span="4"/>
+                                            <a-col :span="14"><a-divider v-if="index2 !== 0 && index2 % field1.def.length == 0" style="height: 2px; background-color: #1890ff;"/></a-col>
+                                            <a-col :span="8"/>
+                                        </a-row>
+                                        
+                                        <a-form-item v-if="field2.type !== 'list'" :name="['explain', index, 'explain', index1, 'explain', index2, 'value']" :label="field2.comment" :label-col="{ span: 6 }" :wrapper-col="{ span: 12 }" :rules="[{ required: true, message: field2.comment + '没有赋值' }]">
+                                            <a-input v-model:value="field2.value" :placeholder="'类型: ' + field2.type"/>
+                                        </a-form-item>
+                                        <a-form-item v-if="field2.type === 'list'" :name="['explain', index, 'explain', index1, 'explain', index2, 'value']" :label="field2.comment" :label-col="{ span: 6 }" :wrapper-col="{ span: 12 }" :rules="[{ required: true, message: field2.comment + '没有赋值' }]">
+                                            <a-input v-model="field2.value" :value="field2.comment" disabled>
+                                                <template #addonBefore><i class="fa-solid fa-plus" style="cursor: pointer;" @click="field2.def.forEach(e => field2.explain.push(Object.assign({}, e)))"></i></template>
+                                                <template #addonAfter><i class="fa-solid fa-minus" style="cursor: pointer;" @click="field2.def.forEach(e => field2.explain.pop())"></i></template>
+                                            </a-input>
+                                        </a-form-item>
+                                        <span v-for="(field3, index3) in field2.explain">
+                                            <a-row>
+                                                <a-col :span="6"/>
+                                                <a-col :span="12"><a-divider v-if="index3 !== 0 && index3 % field2.def.length == 0" style="height: 2px; background-color: #1890ff;"/></a-col>
+                                                <a-col :span="8"/>
+                                            </a-row>
+                                            
+                                            <a-form-item v-if="field3.type !== 'list'" :name="['explain', index, 'explain', index1, 'explain', index2, 'explain', index3, 'value']" :label="field3.comment" :label-col="{ span: 8 }" :wrapper-col="{ span: 10 }" :rules="[{ required: true, message: field3.comment + '没有赋值' }]">
+                                                <a-input v-model:value="field3.value" :placeholder="'类型: ' + field3.type"/>
+                                            </a-form-item>
+                                            <a-form-item v-if="field3.type === 'list'" :name="['explain', index, 'explain', index1, 'explain', index2, 'explain', index3, 'value']" :label="field3.comment" :label-col="{ span: 8 }" :wrapper-col="{ span: 10 }" :rules="[{ required: true, message: field3.comment + '没有赋值' }]">
+                                                <a-input v-model="field3.value" :value="field3.comment" disabled>
+                                                    <template #addonBefore><i class="fa-solid fa-plus" style="cursor: pointer;" @click="field3.def.forEach(e => field3.explain.push(Object.assign({}, e)))"></i></template>
+                                                    <template #addonAfter><i class="fa-solid fa-minus" style="cursor: pointer;" @click="field3.def.forEach(e => field3.explain.pop())"></i></template>
+                                                </a-input>
+                                            </a-form-item>
+                                            <span v-for="(field4, index4) in field3.explain">
+                                                <a-row>
+                                                    <a-col :span="8"/>
+                                                    <a-col :span="10"><a-divider v-if="index4 !== 0 && index4 % field3.def.length == 0" style="height: 2px; background-color: #1890ff;"/></a-col>
+                                                    <a-col :span="8"/>
+                                                </a-row>
+
+                                                <a-form-item v-if="field4.type !== 'list'" :name="['explain', index, 'explain', index1, 'explain', index2, 'explain', index3, 'explain', index4, 'value']" :label="field4.comment" :label-col="{ span: 10 }" :wrapper-col="{ span: 8 }" :rules="[{ required: true, message: field4.comment + '没有赋值' }]">
+                                                    <a-input v-model:value="field4.value" :placeholder="'类型: ' + field4.type"/>
+                                                </a-form-item>
+                                                <a-form-item v-if="field4.type === 'list'" :name="['explain', index, 'explain', index1, 'explain', index2, 'explain', index3, 'explain', index4, 'value']" :label="field4.comment" :label-col="{ span: 10 }" :wrapper-col="{ span: 8 }" :rules="[{ required: true, message: field4.comment + '没有赋值' }]">
+                                                    <a-input v-model="field4.value" :value="field4.comment" disabled>
+                                                        <template #addonBefore><i class="fa-solid fa-plus" style="cursor: pointer;" @click="field4.def.forEach(e => field4.explain.push(Object.assign({}, e)))"></i></template>
+                                                        <template #addonAfter><i class="fa-solid fa-minus" style="cursor: pointer;" @click="field4.def.forEach(e => field4.explain.pop())"></i></template>
+                                                    </a-input>
+                                                </a-form-item>
+                                            </span>
+                                        </span>
+                                    </span>
+                                </span>
+                            </span>
+
+                            <a-form-item :wrapper-col="{ offset: 2, span: 16 }">
+                                <a-button type="primary" html-type="submit">发送</a-button>
+                                <a-button style="margin-left: 10px">重置</a-button>
+                            </a-form-item>
+
+                        </a-form>
+
+                        <pre v-highlightjs><code class="json">{{ result[item] }}</code></pre>
+                        <a-button type="primary" v-if="(result[item] || []).length != 0" @click="result[item] = ''" danger>清空</a-button>
+                    </a-card>
+                </a-list-item>
+            </template>
+        </a-list>
+    </a-tab-pane>
+</a-tabs>
+
+            `,
+        });
+        hljs.configure({'ignoreUnescapedHTML': true});
+        app.use(Vue3Highlightjs);
+        app.use(antd.Button);
+        app.use(antd.Card);
+        app.use(antd.Col);
+        app.use(antd.Divider);
+        app.use(antd.Form);
+        app.use(antd.Input);
+        app.use(antd.List);
+        app.use(antd.Row);
+        app.use(antd.Select);
+        app.use(antd.Tabs);
+        app.use(antd.Tree);
+        app.mount('#container');
+
+
+    </script>
+</body>
+
+</html>
