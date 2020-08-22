@@ -1,0 +1,5 @@
+{
+  "name": "network",
+  "type": "module",
+  "main": "./lib/Network.js"
+}

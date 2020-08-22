@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>index</title>
+    <style> html, body, canvas {margin: 0; padding: 0; width: 100vw; height: 100vh; overflow: hidden; user-select: none;} </style>
+    <style> #panel {position: fixed; width: 300px; z-index: 100; display: block; text-align: center; background-color: white; box-shadow: rgba(64, 64, 64, 1) 0px 0px 8px 0px;} </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet">
+    <!-- lib -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    
+    <!-- find ../server/script/make/protocol/js/ -maxdepth 1 -name "*.js" ! -name "Encoder.js" ! -name "Decoder.js" ! -name "ProtocolRouter.js" | sed 's/^/\<script src\=\"/g' | sed 's/$/\"\>\<\/script\>/g' -->
+
+    <!-- find ../server/script/make/protocol/js/meta/ -maxdepth 1 -name "*.js"  ! -name "Reader.js" ! -name "Writer.js" ! -name "ProtocolDefine.js" | sed 's/^/\<script src\=\"/g' | sed 's/$/\"\>\<\/script\>/g' -->
+
+    <!-- protocol encoder/decoder -->
+    <!-- find ../server/script/make/protocol/js/ -name "*.js" | sed 's/^/\<script src\=\"/g' | sed 's/$/\"\>\<\/script\>/g' -->
+
+    <!-- protocol reader/writer -->
+    <!-- find ../server/script/make/protocol/js/meta/ -name "*.js" | sed 's/^/\<script src\=\"/g' | sed 's/$/\"\>\<\/script\>/g' -->
+
+    <!-- core -->
+</head>
+<body onkeydown="event.key == 'Escape' && (document.getElementById('panel').style.display = 'unset')">
+    <div id="panel">
+        <br /><br />
+        <input type="button" value="关闭面板" onclick="document.getElementById('panel').style.display = 'none'" style="width: 60%;" /><br /><br /><br />
+        <br /><br />
+        <input type="text" id="address" placeholder="地址" value="" style="outline: none;" /><br /><br />
+        <input id="request" type="button" value="请求" style="width: 60%;" /><br /><br />
+        <select id="server" name="server" placeholder="服务器" style="width: 60%;"></select><br /><br />
+        <input type="text" id="account" name="account" placeholder="账号" /><br /><br />
+        <input id="login" type="button" value="登录" style="width: 60%;" /><br /><br /><br />
+        <br /><br />
+        <input type="number" id="protocol" placeholder="协议号" style="outline: none;" /><br /><br />
+        <input type="text" id="data" placeholder="数据" style="outline: none;" /><br /><br />
+        <input id="send" type="button" value="发送" style="width: 60%;" /><br /><br /><br />
+        <textarea id="result" cols="22" rows="10"></textarea>
+        <br /><br /><br />
+    </div>
+    <canvas id="stage"> Your browser does not support the canvas element. </canvas>
+    <script type="module" src="./lib/App.js"></script>
+    <script type="module">
+        document.querySelector('#address').value = `${location.protocol}//api.${location.host}/server-list?channel=web`;
+        import App from "./lib/App.js";
+        const app = new App(document.querySelector("#panel"), document.querySelector("#stage"));
+        // draggable
+        $(function () { $("#panel").draggable(); });
+    </script>
+</body>
+</html>
