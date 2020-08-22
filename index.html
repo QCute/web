@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>index</title>
+    <style> html, body {width: 100%; height: 100%; overflow: hidden; user-select: none;} html, body, canvas {margin: 0; padding: 0;} </style>
+    <style> #widget {position: fixed; top: 10%; left: 1%; width: 300px; z-index: 100; display: none; text-align: center; background-color: white; box-shadow: rgba(64, 64, 64, 1) 0px 0px 8px 0px;} </style>
+    <link href="https://cdn.bootcdn.net/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet">
+    <!-- lib -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <!-- find ../server/script/make/protocol/js/ -name "*.js" | sed 's/^/\<script src\=\"/g' | sed 's/$/\"\>\<\/script\>/g' -->
+    <script src="../server/script/make/protocol/js/AccountProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/AssetProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/AuctionProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/BuffProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/ChatProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/CheatProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/DungeonProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/FriendProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/GuildProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/ItemProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/MailProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/MapProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/NoticeProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/ProtocolDefine.js"></script>
+    <script src="../server/script/make/protocol/js/QuestProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/RankCenterProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/RankProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/RankWorldProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/RoleProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/ShopProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/SkillProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/TitleProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/VipProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/WarProtocol.js"></script>
+    <script src="../server/script/make/protocol/js/WelfareProtocol.js"></script>
+    <!-- core -->
+    <script src="./js/grid.js"></script>
+    <script src="./js/Reader.js"></script>
+    <script src="./js/Writer.js"></script>
+    <script src="./js/Net.js"></script>
+</head>
+<body onkeydown="(event.key == '`' && (document.getElementById('widget').style.display = 'block')) || event.key == 'Escape' && (document.getElementById('widget').style.display = 'none')">
+    <div id="widget">
+        <br /><br />
+        <input type="text" id="protocol" placeholder="protocol" style="outline: none;" /><br /><br />
+        <input type="text" id="content" placeholder="content" style="outline: none;" /><br /><br />
+        <input type="button" value="发送" onclick="send()" /><br /><br />
+    </div>
+    <canvas id="map" onmousedown="move(event.offsetX, event.offsetY)"> Your browser does not support the canvas element. </canvas>
+    <script type="text/javascript">
+        // view
+        let grid = new Grid("map", 10);
+        // data
+        let net = new Net("1");
+        // move
+        function move(x, y) {
+            let object = { id: net.role.roleId, x: grid.correct(x), y: grid.correct(y) }
+            net.send(20006, [object.x, object.y]);
+            grid.move(object);
+        }
+        // send
+        function send() {
+            let protocol = document.getElementById("protocol").value;
+            let content = JSON.parse(document.getElementById("content").value);
+            net.send(protocol, content);
+        }
+        // widget draggable
+        $(function () { $("#widget").draggable(); });
+        let list = [];
+        $(function () {
+            // list = [...Array(1000).keys()].map(e => new Net(e.toString()));
+        });
+    </script>
+</body>
+</html>
