@@ -8,7 +8,7 @@ class Net{
         // server list
         $.ajax({url: "http://api.fake.me", async: false, success: (responseText) => this.servers = JSON.parse(responseText) });
         // role
-        this.account = account;
+        this.accountName = account;
         // protocol handler
         this.handler = {};
         // byte reader
@@ -41,7 +41,7 @@ class Net{
         this.socket = new WebSocket(this.toUrl(server.server_ip, server.server_port));
         this.socket.binaryType = "arraybuffer";
         // connect query account
-        this.socket.onopen = (event) => { console.log(event);  this.send(10001, [this.serverId, this.account]); };
+        this.socket.onopen = (event) => { console.log(event);  this.send(10001, [this.serverId, this.accountName]); };
         this.socket.onclose = (event) => { console.log(event); };
         this.socket.onmessage =  (event) => { this.__handle(event) }
     }
@@ -107,20 +107,24 @@ class Net{
         switch (protocol) {
             case 10001: {
                 // account query
-                if (content.result.length !== 0) {
+                if (content.list.length == 0) {
                     // create
-                    // Account, RoleName, ServerId, Sex, Classes, Channel, DeviceId, Mac, DeviceType
-                    this.send(10002, [this.serverId, this.account, this.account, Math.trunc(Math.random() * 2) + 1, Math.trunc(Math.random() * 6) + 1, "test", "", "", "web."]);
+                    // RoleName, AccountName, ServerId, Sex, Classes, Channel, DeviceId, Mac, DeviceType
+                    this.send(10002, [Array.from({length: 6}, () => Math.trunc(Math.random() * 7)).join(""), this.serverId, this.accountName, Math.trunc(Math.random() * 2) + 1, Math.trunc(Math.random() * 6) + 1, "test", "", "", "web."]);
                 } else {
+                    this.roleId = content.list[0].roleId;
+                    this.roleName = content.list[0].roleName;
                     // login
-                    this.send(10003, [this.serverId, this.account]);
+                    this.send(10003, [this.roleId, this.roleName, this.serverId, this.accountName]);
                 }
             }break;
             case 10002: {
                 // account create
                 if (content.result.length === 0) {
                     // login
-                    this.send(10003, [this.serverId, this.account]);
+                    this.roleId = content.roleId;
+                    this.roleName = content.roleName;
+                    this.send(10003, [this.roleId, this.roleName, this.serverId, this.accountName]);
                 } else {
                     console.log("create account failed with: " + content.result);
                 }
