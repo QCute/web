@@ -1,5 +1,7 @@
+
 // canvas grid
-class Grid {
+
+export default class Grid {
     // view
     size = 10;
     canvas = {};

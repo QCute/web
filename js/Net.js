@@ -1,7 +1,12 @@
 
-"use strict";
+import Encoder from "../protocol/Encoder.js";
+import Decoder from "../protocol/Decoder.js";
+// import Encoder from "../../server/script/make/protocol/js/Encoder.js";
+// import Decoder from "../../server/script/make/protocol/js/Decoder.js";
 
-class Net {
+import Grid from "./Grid.js";
+
+export default class Net {
 
     constructor(account, servers, gridId, gridSize) {
         // BigInt
@@ -12,8 +17,10 @@ class Net {
         this.accountName = account;
         // protocol handler
         this.handler = {};
-        // byte reader
-        this.reader = new Reader();
+        // byte encoder
+        this.encoder = new Encoder();
+        // byte decoder
+        this.decoder = new Decoder();
         // grid
         this.gridId = gridId || "map";
         this.gridSize = gridSize || 10;
@@ -76,9 +83,9 @@ class Net {
     }
 
     // send protocol
-    send(protocol, content) {
+    send(protocol, data) {
         try {
-            const buffer = new Writer().write(protocol, content);
+            const buffer = new Encoder().encode(protocol, data);
             return this.__send(buffer);
         } catch (e) {
             console.error(e);
@@ -119,10 +126,11 @@ class Net {
 
     // handle socket message event
     __handle(event) {
-        let packet = this.reader.read(event.data);
-        if (!packet) return;
-        // read packet loop
+        this.decoder.appendData(event.data);
+        // decode packet loop
         while (true) {
+            const packet = this.decoder.decode();
+            if (!packet) break;
             try {
                 // protocol dispatch 
                 const handler = this.handler[packet.protocol];
@@ -133,9 +141,6 @@ class Net {
             } catch (error) {
                 console.error(error)
             }
-            // append incoming data
-            packet = this.reader.read();
-            if (!packet) break;
         }
     }
 
